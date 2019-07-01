@@ -1,0 +1,9 @@
+---
+- name: Playbook for role testing
+  hosts: all
+
+  vars:
+    operator_user: ubuntu
+
+  roles:
+    - role: ansible-gocd
