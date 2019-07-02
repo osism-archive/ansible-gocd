@@ -1,0 +1,18 @@
+version: '3'
+services:
+  go-server:
+    image: "{{ gocd_server_image }}"
+    ports:
+      - "8153:8153"
+      - "8154:8154"
+    volumes:
+      - "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
+  go-agent:
+    image: "{{ gocd_agent_image }}"
+    links:
+      - "go-server"
+    depends_on:
+      - "go-server"
+    environment:
+      AGENT_AUTO_REGISTER_KEY: "{{ gocd_agent_auto_register_key }}"
+      GO_SERVER_URL: "{{ gocd_server_url }}"

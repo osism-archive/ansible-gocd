@@ -1,1 +1,34 @@
 ---
+##########################
+# docker
+
+docker_registry: index.docker.io
+
+##########################
+# operator user
+
+operator_user: ubuntu
+operator_group: "{{ operator_user }}"
+
+##########################
+# configuration
+
+configuration_directory: /opt/configuration
+gocd_docker_compose_directory: /opt/gocd
+gocd_configuration_directory: /opt/gocd/configuration
+
+##########################
+# GoCD server
+
+gocd_server_tag: v19.5.0
+gocd_server_image: gocd/gocd-server:{{ gocd_server_tag }}
+gocd_server_hostname: go-server
+gocd_server_url: https://{{ gocd_server_hostname }}:8154/go
+gocd_server_url_agents: https://localhost:8154/go/api/agents
+
+##########################
+# GoCD agent
+
+gocd_agent_tag: v19.5.0
+gocd_agent_image: gocd/gocd-agent-ubuntu-16.04:{{ gocd_agent_tag }}
+gocd_agent_auto_register_key: '123456789abcdefgh987654321'

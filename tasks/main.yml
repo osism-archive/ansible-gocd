@@ -1,7 +1,59 @@
 ---
-- name: Create dummy file
-  copy:
-    content: ""
-    dest: /tmp/dummy
+- name: Create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0755
+  become: true
+  with_items:
+    - "{{ configuration_directory }}"
+    - "{{ gocd_docker_compose_directory }}"
+    - "{{ gocd_configuration_directory }}"
+
+- name: Copy configuration files
+  template:
     force: no
-    mode: 0644
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0640
+  with_items:
+    - src: cruise-config.xml.j2
+      dest: "{{ gocd_configuration_directory }}/cruise-config.xml"
+
+- name: Copy docker-compose.yml file
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ gocd_docker_compose_directory }}/docker-compose.yml"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0640
+
+- name: Pull images
+  command: "docker-compose -f {{ gocd_docker_compose_directory }}/docker-compose.yml pull"
+  register: result
+  changed_when: ('Downloaded' in result.stdout)
+
+- name: Run service
+  command: "docker-compose -f {{ gocd_docker_compose_directory }}/docker-compose.yml up -d --remove-orphans --no-build"
+  register: result
+  changed_when: ('Creating' in result.stdout or 'Recreating' in result.stdout)
+
+- name: Wait for service readiness
+  uri:
+    url: "{{ gocd_server_url_agents }}"
+    headers:
+      Accept: "application/vnd.go.cd.v5+json"
+    return_content: yes
+    validate_certs: no
+  register: json_response
+  until: json_response["status"] == 200
+  retries: 30
+  delay: 10
+
+  # - name: Check agent_state from first agent in the list
+  #   debug:
+  #     msg: "First agents state is {{ (json_response.content|from_json)['_embedded']['agents'][0]['agent_state'] }}"
