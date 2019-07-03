@@ -15,4 +15,7 @@ services:
       - "go-server"
     environment:
       AGENT_AUTO_REGISTER_KEY: "{{ gocd_agent_auto_register_key }}"
+      AGENT_AUTO_REGISTER_HOSTNAME: "{{ gocd_agent_auto_register_hostname }}"
+      AGENT_AUTO_REGISTER_RESOURCES: "{{ gocd_agent_auto_register_resources }}"
+      AGENT_AUTO_REGISTER_ENVIRONMENTS: "{{ gocd_agent_auto_register_environments }}"
       GO_SERVER_URL: "{{ gocd_server_url }}"

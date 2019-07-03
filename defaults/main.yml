@@ -37,3 +37,6 @@ gocd_server_url: https://{{ gocd_server_hostname }}:8154/go
 gocd_agent_tag: v19.5.0
 gocd_agent_image: gocd/gocd-agent-ubuntu-16.04:{{ gocd_agent_tag }}
 gocd_agent_auto_register_key: '123456789abcdefgh987654321'
+gocd_agent_auto_register_hostname: agent
+gocd_agent_auto_register_resources: "Linux,Ubuntu"
+gocd_agent_auto_register_environments:
