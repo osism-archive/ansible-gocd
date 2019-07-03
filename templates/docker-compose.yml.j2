@@ -6,7 +6,7 @@ services:
       - "8153:8153"
       - "8154:8154"
     volumes:
-      - "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
+      - "{{ gocd_configuration_directory }}:/godata/config/"
   go-agent:
     image: "{{ gocd_agent_image }}"
     links:

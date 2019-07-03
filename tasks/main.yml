@@ -24,6 +24,16 @@
     - src: cruise-config.xml.j2
       dest: "{{ gocd_configuration_directory }}/cruise-config.xml"
 
+- name: Create passwd file for file-based authentication plugin
+  htpasswd:
+          crypt_scheme: ldap_sha1
+          path: "{{ gocd_configuration_directory }}/passwd"
+          name: "{{ gocd_admin_username }}"
+          password: "{{ gocd_admin_password }}"
+          owner: root
+          group: 1000
+          mode: 0640
+
 - name: Copy docker-compose.yml file
   template:
     src: docker-compose.yml.j2
@@ -44,7 +54,9 @@
 
 - name: Wait for service readiness
   uri:
-    url: "{{ gocd_server_url_agents }}"
+    url: "https://localhost:8154/go/api/agents"
+    url_username: "{{ gocd_admin_username }}"
+    url_password: "{{ gocd_admin_password }}"
     headers:
       Accept: "application/vnd.go.cd.v5+json"
     return_content: yes

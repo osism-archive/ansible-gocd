@@ -18,13 +18,18 @@ gocd_docker_compose_directory: /opt/gocd
 gocd_configuration_directory: /opt/gocd/configuration
 
 ##########################
+# GoCD admin user credentials
+
+gocd_admin_username: admin
+gocd_admin_password: admin
+
+##########################
 # GoCD server
 
 gocd_server_tag: v19.5.0
 gocd_server_image: gocd/gocd-server:{{ gocd_server_tag }}
 gocd_server_hostname: go-server
 gocd_server_url: https://{{ gocd_server_hostname }}:8154/go
-gocd_server_url_agents: https://localhost:8154/go/api/agents
 
 ##########################
 # GoCD agent

@@ -6,6 +6,18 @@
           commandRepositoryLocation="default"
           serverId="239404b7-69fe-4fc9-81e9-945654461562"
           tokenGenerationKey="24cbd25a-549a-4e08-b0e9-f313ce78078a">
-    <backup emailOnSuccess="true" emailOnFailure="true" />
+    <security>
+      <authConfigs>
+        <authConfig id="password-file-auth-config" pluginId="cd.go.authentication.passwordfile">
+          <property>
+            <key>PasswordFilePath</key>
+            <value>/godata/config/passwd</value>
+          </property>
+        </authConfig>
+      </authConfigs>
+      <admins>
+        <user>{{ gocd_admin_username }}</user>
+      </admins>
+    </security>
   </server>
 </cruise>
