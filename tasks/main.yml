@@ -30,8 +30,8 @@
           path: "{{ gocd_configuration_directory }}/passwd"
           name: "{{ gocd_admin_username }}"
           password: "{{ gocd_admin_password }}"
-          owner: root
-          group: 1000
+          owner: "{{ operator_user }}"
+          group: "{{ operator_group }}"
           mode: 0640
 
 - name: Copy docker-compose.yml file
