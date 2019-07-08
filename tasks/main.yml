@@ -34,6 +34,15 @@
           group: "{{ operator_group }}"
           mode: 0640
 
+- name: Create agent ssh_config directory
+  file:
+    path: "{{ gocd_configuration_directory }}/agent_ssh_config"
+    state: directory
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0700
+  become: true
+
 - name: Copy docker-compose.yml file
   template:
     src: docker-compose.yml.j2

@@ -6,7 +6,8 @@ services:
       - "8153:8153"
       - "8154:8154"
     volumes:
-      - "{{ gocd_configuration_directory }}:/godata/config/"
+      -  "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
+      -  "{{ gocd_configuration_directory }}/passwd:/godata/config/passwd"
   go-agent:
     image: "{{ gocd_agent_image }}"
     links:
@@ -19,3 +20,5 @@ services:
       AGENT_AUTO_REGISTER_RESOURCES: "{{ gocd_agent_auto_register_resources }}"
       AGENT_AUTO_REGISTER_ENVIRONMENTS: "{{ gocd_agent_auto_register_environments }}"
       GO_SERVER_URL: "{{ gocd_server_url }}"
+    volumes:
+      - "{{ gocd_configuration_directory }}/agent_ssh_config:/home/go/.ssh:ro"
