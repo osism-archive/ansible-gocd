@@ -6,14 +6,17 @@ services:
       - "8153:8153"
       - "8154:8154"
     volumes:
-      -  "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
-      -  "{{ gocd_configuration_directory }}/passwd:/godata/config/passwd"
+      - "{{ configuration_directory }}:/opt/configuration:ro"
+      - "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
+      - "{{ gocd_configuration_directory }}/passwd:/godata/config/passwd"
   go-agent:
     image: "{{ gocd_agent_image }}"
     links:
       - "go-server"
     depends_on:
       - "go-server"
+    extra_hosts:
+      - "{{ manager_hosts_entry }}"
     environment:
       AGENT_AUTO_REGISTER_KEY: "{{ gocd_agent_auto_register_key }}"
       AGENT_AUTO_REGISTER_HOSTNAME: "{{ gocd_agent_auto_register_hostname }}"
@@ -21,4 +24,5 @@ services:
       AGENT_AUTO_REGISTER_ENVIRONMENTS: "{{ gocd_agent_auto_register_environments }}"
       GO_SERVER_URL: "{{ gocd_server_url }}"
     volumes:
-      - "{{ gocd_configuration_directory }}/agent_ssh_config:/home/go/.ssh:ro"
+      - "{{ secrets_directory }}/id_rsa.operator:/home/go/.ssh/id_rsa:ro"
+      - "/etc/ssh/ssh_host_rsa_key.pub:/home/go/.ssh/known_hosts:ro"

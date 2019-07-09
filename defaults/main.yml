@@ -13,9 +13,15 @@ operator_group: "{{ operator_user }}"
 ##########################
 # configuration
 
+secrets_directory: /opt/ansible/secrets
 configuration_directory: /opt/configuration
 gocd_docker_compose_directory: /opt/gocd
 gocd_configuration_directory: /opt/gocd/configuration
+
+##########################
+# Add manager hostname to hosts file
+
+manager_hosts_entry: "manager:192.168.10.1"
 
 ##########################
 # GoCD admin user credentials
