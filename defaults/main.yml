@@ -11,6 +11,14 @@ operator_user: ubuntu
 operator_group: "{{ operator_user }}"
 
 ##########################
+# GoCD container user
+
+gocd_user_name: go
+gocd_user_uid: 1000
+gocd_user_group: go
+gocd_user_gid: 1000
+
+##########################
 # configuration
 
 secrets_directory: /opt/ansible/secrets
