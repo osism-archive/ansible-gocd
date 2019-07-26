@@ -1,21 +1,4 @@
 ---
-- name: Create GoCD service group
-  group:
-    non_unique: yes
-    name: "{{ gocd_user_group }}"
-    gid: "{{ gocd_user_gid }}"
-  become: true
-
-- name: Create GoCD service user
-  user:
-    non_unique: yes
-    create_home: no
-    name: "{{ gocd_user_name }}"
-    comment: "GoCD service user"
-    uid: "{{ gocd_user_uid }}"
-    group: "{{ gocd_user_group }}"
-  become: true
-
 - name: Create required directories
   file:
     path: "{{ item }}"
@@ -34,31 +17,54 @@
     force: no
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ gocd_user_name }}"
-    group: "{{ gocd_user_group }}"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
     mode: 0640
   with_items:
     - src: cruise-config.xml.j2
       dest: "{{ gocd_configuration_directory }}/cruise-config.xml"
   become: true
 
+- name: Copy custom entrypoint script
+  template:
+    src: "custom-entrypoint.sh.j2"
+    dest: "{{ gocd_configuration_directory }}/custom-entrypoint.sh"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0755
+  become: true
+
+- name: Copy awk scripts for usermod/groupmod
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0644
+  with_items:
+    - src: "usermod.awk.j2"
+      dest: "{{ gocd_configuration_directory }}/usermod.awk"
+    - src: "groupmod.awk.j2"
+      dest: "{{ gocd_configuration_directory }}/groupmod.awk"
+  become: true
+
 - name: Create passwd file for file-based authentication plugin
   htpasswd:
-          crypt_scheme: ldap_sha1
-          path: "{{ gocd_configuration_directory }}/passwd"
-          name: "{{ gocd_admin_username }}"
-          password: "{{ gocd_admin_password }}"
-          owner: "{{ gocd_user_name }}"
-          group: "{{ gocd_user_group }}"
-          mode: 0600
+    crypt_scheme: ldap_sha1
+    path: "{{ gocd_configuration_directory }}/passwd"
+    name: "{{ gocd_admin_username }}"
+    password: "{{ gocd_admin_password }}"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
+    mode: 0600
   become: true
 
 - name: Create agent ssh_config directory
   file:
     path: "{{ gocd_configuration_directory }}/agent_ssh_config"
     state: directory
-    owner: "{{ gocd_user_name }}"
-    group: "{{ gocd_user_group }}"
+    owner: "{{ operator_user }}"
+    group: "{{ operator_group }}"
     mode: 0700
   become: true
 

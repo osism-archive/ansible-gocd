@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Change uid and gid of GoCD user before calling entrypoint script.
+
+entrypoint_script="/docker-entrypoint.sh"
+
+uid="{{ operator_user_id }}"
+gid="{{ operator_group_id }}"
+
+go_user="{{ gocd_user_name }}"
+go_group="$go_user"
+
+echo "Changing uid:gid for $go_user to $uid:$gid"
+
+awk -f /usermod.awk /etc/passwd > /tmp/passwd
+mv /tmp/passwd /etc/passwd
+
+echo "Changing gid number for $go_group to $gid"
+
+awk -f /groupmod.awk /etc/group > /tmp/group
+mv /tmp/group /etc/group
+
+echo "Calling /docker-entrypoint.sh"
+
+exec $entrypoint_script

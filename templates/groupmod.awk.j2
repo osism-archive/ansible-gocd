@@ -1,0 +1,15 @@
+# awk - change gid number for gocd group at /etc/group
+
+BEGIN {
+  FS=":"
+  OFS=FS
+}
+
+{
+  if ($1 ~ /{{ gocd_user_name }}/) {
+    $3={{ operator_group_id }}
+    print
+  }
+  else
+    print
+}

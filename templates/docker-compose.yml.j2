@@ -9,6 +9,10 @@ services:
       - "{{ configuration_directory }}:/opt/configuration:ro"
       - "{{ gocd_configuration_directory }}/cruise-config.xml:/godata/config/cruise-config.xml"
       - "{{ gocd_configuration_directory }}/passwd:/godata/config/passwd"
+      - "{{ gocd_configuration_directory }}/custom-entrypoint.sh:/custom-entrypoint.sh"
+      - "{{ gocd_configuration_directory }}/usermod.awk:/usermod.awk"
+      - "{{ gocd_configuration_directory }}/groupmod.awk:/groupmod.awk"
+    entrypoint: "/custom-entrypoint.sh"
   go-agent:
     image: "{{ gocd_agent_image }}"
     links:
@@ -26,3 +30,7 @@ services:
     volumes:
       - "{{ secrets_directory }}/id_rsa.operator:/home/go/.ssh/id_rsa:ro"
       - "/etc/ssh/ssh_host_rsa_key.pub:/home/go/.ssh/known_hosts:ro"
+      - "{{ gocd_configuration_directory }}/custom-entrypoint.sh:/custom-entrypoint.sh"
+      - "{{ gocd_configuration_directory }}/usermod.awk:/usermod.awk"
+      - "{{ gocd_configuration_directory }}/groupmod.awk:/groupmod.awk"
+    entrypoint: "/custom-entrypoint.sh"
